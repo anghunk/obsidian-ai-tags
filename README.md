@@ -36,7 +36,7 @@
 
 > 注：该项目暂未上架 Obsidian 插件商店
 
-1. 从 [GitHub Releases](https://github.com/ezyshu/obsidian-ai-tags/releases) 页面下载最新版本的以下文件：
+1. 从 [GitHub Releases](https://github.com/anghunk/obsidian-ai-tags/releases) 页面下载最新版本的以下文件：
    - main.js
    - manifest.json
    - styles.css
@@ -47,7 +47,7 @@
 
 **或者使用 [BRAT 插件](https://github.com/TfTHacker/obsidian42-brat) 安装：**
 1. 安装 BRAT 插件
-2. 在 BRAT 设置中添加本插件仓库路径：`ezyshu/obsidian-ai-tags`
+2. 在 BRAT 设置中添加本插件仓库路径：`anghunk/obsidian-ai-tags`
 3. 启用 AI Tags Generator 插件
 
 ## ⚙️ 配置说明
@@ -86,4 +86,4 @@
 
 ---
 
-MIT License | 欢迎贡献 | [GitHub Issues](https://github.com/ezyshu/obsidian-ai-tags/issues)
+MIT License | 欢迎贡献 | [GitHub Issues](https://github.com/anghunk/obsidian-ai-tags/issues)

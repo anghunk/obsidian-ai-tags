@@ -357,7 +357,7 @@ class AutoTaggerSettingTab extends PluginSettingTab {
 		// 添加 GitHub 链接
 		const githubLink = containerEl.createEl('a', {
 			text: '在 GitHub 上提交反馈',
-			href: 'https://github.com/ezyshu/obsidian-ai-tags'
+			href: 'https://github.com/anghunk/obsidian-ai-tags'
 		});
 		githubLink.addClass('setting-item-description');
 		githubLink.addClass('github-feedback-link');

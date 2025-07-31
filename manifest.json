@@ -4,7 +4,7 @@
   "version": "1.0.5",
   "minAppVersion": "0.15.0",
   "description": "使用 AI 自动为文档笔记生成推荐标签。",
-  "author": "ezyshu",
-  "authorUrl": "https://github.com/ezyshu",
+  "author": "anghunk",
+  "authorUrl": "https://github.com/anghunk",
   "isDesktopOnly": false
 }

@@ -36,7 +36,7 @@ A powerful Obsidian plugin that uses AI to intelligently generate tags for your 
 
 > Note: This project is not yet available on the Obsidian plugin store.
 
-1. Download the following files from the [GitHub Releases](https://github.com/ezyshu/obsidian-ai-tags/releases) page:
+1. Download the following files from the [GitHub Releases](https://github.com/anghunk/obsidian-ai-tags/releases) page:
    - main.js
    - manifest.json
    - styles.css
@@ -47,7 +47,7 @@ A powerful Obsidian plugin that uses AI to intelligently generate tags for your 
 
 **Or use the [BRAT plugin](https://github.com/TfTHacker/obsidian42-brat):**
 1. Install the BRAT plugin
-2. Add this repo to BRAT: `ezyshu/obsidian-ai-tags`
+2. Add this repo to BRAT: `anghunk/obsidian-ai-tags`
 3. Enable AI Tags Generator
 
 ## ⚙️ Configuration
@@ -79,7 +79,7 @@ A powerful Obsidian plugin that uses AI to intelligently generate tags for your 
 
 ---
 
-MIT License | Contributions welcome | [GitHub Issues](https://github.com/ezyshu/obsidian-ai-tags/issues)
+MIT License | Contributions welcome | [GitHub Issues](https://github.com/anghunk/obsidian-ai-tags/issues)
 
 ## 🖼️ Feature Showcase
 
