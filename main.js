@@ -569,7 +569,7 @@ var AutoTaggerSettingTab = class extends import_obsidian.PluginSettingTab {
     containerEl.createEl("h3", { text: "\u81EA\u52A8\u6807\u7B7E\u751F\u6210\u8BBE\u7F6E" });
     const githubLink = containerEl.createEl("a", {
       text: "\u5728 GitHub \u4E0A\u63D0\u4EA4\u53CD\u9988",
-      href: "https://github.com/dlzmoe/obsidian-ai-tags"
+      href: "https://github.com/anghunk/obsidian-ai-tags"
     });
     githubLink.addClass("setting-item-description");
     githubLink.addClass("github-feedback-link");

@@ -1,7 +1,7 @@
 {
   "id": "ai-tags",
   "name": "AI Tags Generator",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "minAppVersion": "0.15.0",
   "description": "使用 AI 自动为文档笔记生成推荐标签。",
   "author": "anghunk",
