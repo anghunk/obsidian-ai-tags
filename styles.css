@@ -88,26 +88,6 @@
   display: none;
 }
 
-/* 设置项间距优化 */
-.setting-item {
-  padding: 0.75em 0;
-  border-top: 1px solid var(--background-modifier-border);
-}
-
-.setting-item:first-child {
-  border-top: none;
-}
-
-/* 下拉框样式优化 */
-.setting-item select {
-  min-width: 200px;
-}
-
-/* 输入框样式优化 */
-.setting-item input[type="text"] {
-  min-width: 300px;
-}
-
 /* GitHub链接样式 */
 .github-feedback-link {
   display: inline-block;
