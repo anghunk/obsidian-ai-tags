@@ -1,10 +1,15 @@
 import { RequestError } from '../errors/RequestError';
 
+// 默认系统提示词（与 main.ts 中的 DEFAULT_SYSTEM_PROMPT 保持一致）
+const DEFAULT_SYSTEM_PROMPT = '请根据以下文档内容和已有标签列表，生成5个标签，优先从已有标签中挑选1-2个最相关的标签，如果没有合适的已有标签，可以全部新生成。只返回标签，用逗号分隔，不要包含其他内容。';
+
 export interface AIServiceConfig {
     apiKey: string;
     apiUrl: string;
     model: string;
     existingTags?: string[];
+    tagCount?: number;
+    customPrompt?: string;
 }
 
 export interface AIResponse {
@@ -13,13 +18,12 @@ export interface AIResponse {
 
 export class AIService {
     private config: AIServiceConfig;
-    private static DEFAULT_SYSTEM_PROMPT = '你是一个文档标签生成器，请根据文档内容生成最多 3 个相关的标签。只需返回标签，用逗号分隔，不要包含其他解释或说明，禁止文本中包含空格。';
 
     private getSystemPrompt(): string {
-        return this.config.customPrompt?.trim() || AIService.DEFAULT_SYSTEM_PROMPT;
+        // 如果设置了自定义提示词则使用，否则使用默认提示词
+        return this.config.customPrompt?.trim() || DEFAULT_SYSTEM_PROMPT;
     }
     private static TIMEOUT = 30000; // 30 秒超时
-    private static MAX_RETRIES = 2;
 
     constructor(config: AIServiceConfig) {
         this.config = config;
@@ -49,23 +53,6 @@ export class AIService {
         } finally {
             clearTimeout(timeoutId);
         }
-    }
-
-    private async retryRequest(fn: () => Promise<Response>): Promise<Response> {
-        let lastError: Error;
-        for (let i = 0; i <= AIService.MAX_RETRIES; i++) {
-            try {
-                return await fn();
-            } catch (error) {
-                lastError = error;
-                if (error instanceof RequestError && error.status >= 500) {
-                    await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
-                    continue;
-                }
-                throw error;
-            }
-        }
-        throw lastError;
     }
 
     private calculateSimilarity(str1: string, str2: string): number {
@@ -129,10 +116,6 @@ export class AIService {
             return 'ollama';
         }
         return 'openai';
-    }
-
-    private getCustomPrompt(): string {
-        return this.plugin.settings.customPrompt;
     }
 
     private getFullApiUrl(provider: string): string {

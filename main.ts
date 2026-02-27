@@ -67,6 +67,9 @@ interface AutoTaggerSettings {
 	customPrompt: string;
 }
 
+// 默认系统提示词
+export const DEFAULT_SYSTEM_PROMPT = '请根据以下文档内容和已有标签列表，生成5个标签，优先从已有标签中挑选1-2个最相关的标签，如果没有合适的已有标签，可以全部新生成。只返回标签，用逗号分隔，不要包含其他内容。';
+
 const DEFAULT_SETTINGS: AutoTaggerSettings = {
 	provider: 'openai',
 	providerSettings: {
@@ -101,7 +104,7 @@ const DEFAULT_SETTINGS: AutoTaggerSettings = {
 			model: PROVIDER_CONFIGS.ollama.defaultModel
 		}
 	},
-	customPrompt: ''
+	customPrompt: DEFAULT_SYSTEM_PROMPT
 };
 
 export default class AutoTaggerPlugin extends Plugin {
@@ -216,10 +219,10 @@ export default class AutoTaggerPlugin extends Plugin {
 			return [];
 		}
 
-		// 构造智能 prompt
+		// 构造用户消息内容（包含文档内容和已有标签信息）
 		const allExistingTags = Array.from(this.existingTags);
-		const smartPrompt =
-			`你是一个文档标签生成器。请根据以下文档内容和已有标签列表，优先从已有标签中挑选1-2个最相关的标签，再补充新标签使总数达到3个。如果没有合适的已有标签，可以全部新生成。只返回标签，用逗号分隔，不要包含其他内容。\n\n` +
+		const userContent =
+			`请根据以下文档内容和已有标签列表，生成5个标签，优先从已有标签中挑选1-2个最相关的标签，如果没有合适的已有标签，可以全部新生成。只返回标签，用逗号分隔，不要包含其他内容。\n\n` +
 			`文档内容：\n${content}\n\n` +
 			`已有标签列表：\n${allExistingTags.join(', ')}\n`;
 
@@ -227,11 +230,11 @@ export default class AutoTaggerPlugin extends Plugin {
 			apiKey: providerConfig.apiKey,
 			apiUrl: providerConfig.apiUrl,
 			model: providerConfig.model,
-			customPrompt: smartPrompt
+			customPrompt: this.settings.customPrompt // 使用用户设置的系统提示词
 		};
 		const aiService = new AIService(config);
 		try {
-			const result = await aiService.generateTags(content);
+			const result = await aiService.generateTags(userContent);
 			return result;
 		} catch (error) {
 			new Notice('AI Tags 生成标签时出错，请检查控制台日志。');
@@ -361,60 +364,6 @@ class AutoTaggerSettingTab extends PluginSettingTab {
 		});
 		githubLink.addClass('setting-item-description');
 		githubLink.addClass('github-feedback-link');
-
-		// 添加提供商说明
-		const providerDescriptions = {
-			openai: [
-				'OpenAI',
-				'• API 地址：https://api.openai.com/v1/chat/completions',
-				'• 支持模型：gpt-4o-mini, gpt-4o, gpt-3.5-turbo'
-			],
-			gemini: [
-				'Gemini',
-				'• API 地址：https://generativelanguage.googleapis.com（暂不支持代理地址）',
-				'• 支持模型：gemini-1.5-flash, gemini-2.0-flash'
-			],
-			claude: [
-				'Claude',
-				'• API 地址：https://api.anthropic.com/v1/messages',
-				'• 支持模型：claude-3-5-sonnet, claude-3-7-sonnet, claude-3-opus, claude-3-haiku'
-			],
-			deepseek: [
-				'DeepSeek - 深度求索',
-				'• API 地址：https://api.deepseek.com/v1/chat/completions',
-				'• 支持模型：deepseek-chat, deepseek-reasoner'
-			],
-			volcano: [
-				'DeepSeek - 火山引擎',
-				'• API 地址：https://ark.cn-beijing.volces.com/api/v3/chat/completions',
-				'• 注意：需要在火山方舟设置推理模型，然后添加模型名称，如：ep-20250221084433'
-			],
-			ollama: [
-				'Ollama（本地）',
-				'• API 地址：http://localhost:11434/v1/chat/completions',
-				'• 支持模型：llama3, phi3, qwen2, mistral 等本地模型',
-				'• 本地部署，无需 API Key'
-			]
-		};
-
-		const showProviderInfo = (provider: string) => {
-			const providerSection = containerEl.querySelector('.provider-section');
-			if (providerSection) {
-				providerSection.remove();
-			}
-
-			const section = containerEl.createDiv({ cls: 'provider-section' });
-			const providerInfo = section.createDiv({ cls: 'provider-info' });
-
-			if (providerDescriptions[provider]) {
-				providerDescriptions[provider].forEach(text => {
-					providerInfo.createEl('p', { text });
-				});
-			}
-		};
-
-		// 显示当前选择的提供商信息
-		showProviderInfo(this.plugin.settings.provider);
 
 		// 添加提供商选择下拉框
 		new Setting(containerEl)
@@ -560,13 +509,12 @@ class AutoTaggerSettingTab extends PluginSettingTab {
 			});
 
 		// 添加自定义提示词设置
-		const defaultPrompt = '你是一个文档标签生成器，请根据文档内容生成最多 3 个相关的标签。只需返回标签，用逗号分隔，不要包含其他解释或说明。';
 		const customPromptSetting = new Setting(containerEl)
 			.setClass('custom-prompt-setting')
 			.setName('自定义提示词')
-			.setDesc('自定义 AI 生成标签的提示词，留空则使用默认提示词')
+			.setDesc('自定义 AI 生成标签的提示词，修改后将使用自定义内容，重置可恢复默认')
 			.addTextArea(text => {
-				text.setValue(this.plugin.settings.customPrompt || defaultPrompt)
+				text.setValue(this.plugin.settings.customPrompt)
 					.onChange(async (value) => {
 						this.plugin.settings.customPrompt = value;
 						await this.plugin.saveSettings();
@@ -581,7 +529,7 @@ class AutoTaggerSettingTab extends PluginSettingTab {
 					.setIcon('reset')
 					.setTooltip('重置为默认提示词')
 					.onClick(async () => {
-						this.plugin.settings.customPrompt = defaultPrompt;
+						this.plugin.settings.customPrompt = DEFAULT_SYSTEM_PROMPT;
 						await this.plugin.saveSettings();
 						this.display();
 					});

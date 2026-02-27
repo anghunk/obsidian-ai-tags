@@ -17,7 +17,8 @@ A powerful Obsidian plugin that uses AI to intelligently generate tags for your 
   - Ollama (local LLM)
 
 - 🏷️ Intelligent Tag Generation
-  - Always recommends 3 tags: AI will first select 1-2 most relevant tags from your existing tag list, then generate new tags to make up 3 in total
+  - Configurable number of tags to generate (default: 3)
+  - 50% existing tag priority: AI will first select 50% most relevant tags from your existing tag list, then generate new tags for the rest
   - The relevance of existing tags is judged by AI, ensuring more accurate recommendations
   - Supports custom prompts for flexible tag generation style and rules
 
@@ -61,6 +62,7 @@ A powerful Obsidian plugin that uses AI to intelligently generate tags for your 
    - Custom prompt template (optional, for customizing tag generation style and rules)
    - One-click restore to default API endpoint
    - One-click API connectivity test
+   - Configurable number of tags to generate
 
 ## 💡 Usage
 
